@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>miniclawd - Lightweight Personal AI Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #050810;
+      --bg-secondary: #0a0f1a;
+      --bg-card: #111827;
+      --accent-coral: #ff6b6b;
+      --accent-cyan: #00e5cc;
+      --accent-purple: #a855f7;
+      --text-primary: #f0f4ff;
+      --text-secondary: #8892b0;
+      --text-muted: #5a6380;
+      --border-color: rgba(136, 146, 176, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(5, 8, 16, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.25rem;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .logo-icon {
+      font-size: 1.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-cta {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-coral), #ff8f8f);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-secondary);
+      border-color: var(--text-muted);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 160px 0 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse, rgba(255, 107, 107, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .hero-badge span {
+      color: var(--accent-cyan);
+    }
+
+    .hero-icon {
+      font-size: 5rem;
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--accent-coral), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 60px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    /* Features */
+    .features {
+      padding: 100px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-coral);
+      box-shadow: 0 12px 40px rgba(255, 107, 107, 0.1);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(0, 229, 204, 0.1));
+      border-radius: 12px;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Providers */
+    .providers {
+      padding: 80px 0;
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+    }
+
+    .providers-title {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+    }
+
+    .providers-grid {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 32px;
+    }
+
+    .provider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .provider:hover {
+      color: var(--text-primary);
+      border-color: var(--text-muted);
+    }
+
+    .provider-icon {
+      font-size: 1.5rem;
+    }
+
+    /* Code Example */
+    .code-section {
+      padding: 100px 0;
+    }
+
+    .code-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .code-content h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .code-content p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-bottom: 32px;
+    }
+
+    .code-steps {
+      list-style: none;
+    }
+
+    .code-steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent-coral);
+      flex-shrink: 0;
+    }
+
+    .step-content h4 {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0;
+    }
+
+    .code-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .code-dot.red { background: #ff5f56; }
+    .code-dot.yellow { background: #ffbd2e; }
+    .code-dot.green { background: #27ca40; }
+
+    .code-block pre {
+      padding: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .code-block .comment { color: var(--text-muted); }
+    .code-block .command { color: var(--accent-cyan); }
+    .code-block .string { color: var(--accent-coral); }
+
+    /* CTA */
+    .cta {
+      padding: 100px 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(0, 229, 204, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta h2 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .cta p {
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    /* Footer */
+    footer {
+      padding: 60px 0;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .footer-copy {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .code-container {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links {
+        display: none;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 2.25rem;
+      }
+
+      .hero-stats {
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .providers-grid {
+        gap: 16px;
+      }
+
+      .provider {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        gap: 24px;
+        text-align: center;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="#" class="logo">
+        <span class="logo-icon">🦞</span>
+        <span>miniclawd</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#quickstart">Quick Start</a></li>
+        <li><a href="https://github.com/FoundDream/miniclawd" target="_blank">GitHub</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="https://github.com/FoundDream/miniclawd" class="btn btn-primary" target="_blank">
+          Get Started
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <span>✨</span> Open Source · MIT License
+      </div>
+      <span class="hero-icon">🦞</span>
+      <h1>Your Personal AI,<br><span class="highlight">Lightweight & Powerful</span></h1>
+      <p>A minimal AI assistant that connects to any LLM, runs on Telegram & Feishu, searches the web, and remembers everything — in just ~5900 lines of TypeScript.</p>
+      <div class="nav-cta" style="justify-content: center; display: flex;">
+        <a href="https://github.com/FoundDream/miniclawd" class="btn btn-primary" target="_blank">
+          ⭐ Star on GitHub
+        </a>
+        <a href="#quickstart" class="btn btn-secondary">
+          Quick Start →
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-value">~5900</div>
+          <div class="stat-label">Lines of Code</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">6+</div>
+          <div class="stat-label">LLM Providers</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">0</div>
+          <div class="stat-label">API Keys Required*</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Everything you need</h2>
+        <p>A complete AI assistant framework without the bloat</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h3>Multi-LLM Support</h3>
+          <p>Works with Claude, GPT-4, Gemini, Groq, and any OpenAI-compatible API. Switch models with a single config change.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Multi-Channel</h3>
+          <p>Chat via Telegram or Feishu (Lark). Your AI assistant, wherever you are, on any device.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Free Web Search</h3>
+          <p>Built-in web search using DuckDuckGo — no API key required. Just ask and get real-time information.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <h3>Persistent Memory</h3>
+          <p>Long-term memory storage plus daily notes. Your assistant remembers what matters.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Skills System</h3>
+          <p>Extend capabilities with simple Markdown files. No code needed to teach new tricks.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⏰</div>
+          <h3>Scheduling</h3>
+          <p>Cron jobs and heartbeat checks. Schedule tasks, set reminders, automate workflows.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Providers -->
+  <section class="providers">
+    <div class="container">
+      <div class="providers-title">Works with your favorite LLM</div>
+      <div class="providers-grid">
+        <div class="provider">
+          <span class="provider-icon">🟠</span>
+          Anthropic Claude
+        </div>
+        <div class="provider">
+          <span class="provider-icon">🟢</span>
+          OpenAI GPT
+        </div>
+        <div class="provider">
+          <span class="provider-icon">🔵</span>
+          Google Gemini
+        </div>
+        <div class="provider">
+          <span class="provider-icon">⚡</span>
+          Groq
+        </div>
+        <div class="provider">
+          <span class="provider-icon">🌐</span>
+          OpenRouter
+        </div>
+        <div class="provider">
+          <span class="provider-icon">☁️</span>
+          AWS Bedrock
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <section class="code-section" id="quickstart">
+    <div class="container">
+      <div class="code-container">
+        <div class="code-content">
+          <h2>Up and running in minutes</h2>
+          <p>Simple setup, no complex configuration. Just install, add your API key, and start chatting.</p>
+          <ul class="code-steps">
+            <li>
+              <span class="step-number">1</span>
+              <div class="step-content">
+                <h4>Install</h4>
+                <p>Via npm or build from source</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-number">2</span>
+              <div class="step-content">
+                <h4>Initialize</h4>
+                <p>Creates config and workspace</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-number">3</span>
+              <div class="step-content">
+                <h4>Configure</h4>
+                <p>Add your LLM API key</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-number">4</span>
+              <div class="step-content">
+                <h4>Chat</h4>
+                <p>Start talking to your AI</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-dot red"></span>
+            <span class="code-dot yellow"></span>
+            <span class="code-dot green"></span>
+          </div>
+          <pre><code><span class="comment"># Install globally</span>
+<span class="command">npm</span> install -g miniclawd
+
+<span class="comment"># Initialize workspace</span>
+<span class="command">miniclawd</span> onboard
+
+<span class="comment"># Add API key to ~/.miniclawd/config.json</span>
+<span class="comment"># "anthropic": { "api_key": "sk-ant-..." }</span>
+
+<span class="comment"># Start chatting!</span>
+<span class="command">miniclawd</span> agent -m <span class="string">"Hello!"</span>
+
+<span class="comment"># Or start Telegram/Feishu gateway</span>
+<span class="command">miniclawd</span> gateway</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <h2>Ready to build your AI assistant?</h2>
+      <p>Open source, MIT licensed. Fork it, extend it, make it yours.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/FoundDream/miniclawd" class="btn btn-primary" target="_blank">
+          View on GitHub →
+        </a>
+        <a href="https://github.com/FoundDream/miniclawd/blob/main/README.md" class="btn btn-secondary" target="_blank">
+          Read the Docs
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <span>🦞</span>
+          miniclawd
+        </div>
+        <ul class="footer-links">
+          <li><a href="https://github.com/FoundDream/miniclawd" target="_blank">GitHub</a></li>
+          <li><a href="https://github.com/FoundDream/miniclawd/issues" target="_blank">Issues</a></li>
+          <li><a href="https://github.com/FoundDream/miniclawd/blob/main/LICENSE" target="_blank">MIT License</a></li>
+        </ul>
+        <div class="footer-copy">
+          * Web search works without API keys
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
